@@ -100,4 +100,33 @@ class SGFParserCombinatorTests: XCParserTestBase {
         XCTAssertEqual(results.count, 1)
     }
     
+    func testParsePoint() {
+        let pointSample="ep"
+        let results = testParseString(SGFPValueTypeParser.goPointParser(), pointSample)
+        XCTAssertEqual(results.count, 1)
+    }
+
+    func testParseCompressedPoints() {
+        let pointSample="pn:pq"
+        let results = testParseString(SGFPValueTypeParser.goCompressedPointsParser(), pointSample)
+        XCTAssertEqual(results.count, 1)
+    }
+
+    func testParsePointsListWithCompressedPoints() {
+        let pointListSample=";AE[ep][fp][kn][lo][lq][pn:qr]"
+
+        let results = testParseString(SGFPC.nodeParser(), pointListSample)
+        XCTAssertEqual(results.count, 1)
+        
+        let node = results.first!.0 as SGFP.Node
+        XCTAssertEqual(node.properties.count, 1)
+        
+        let property = node.properties.first!
+        XCTAssertEqual(property.identifier.name, "AE")
+        XCTAssertEqual(property.values.count, 6)
+        
+        let (upperLeft, lowerRight) = property.values.last!.toCompresedPoints()!
+        XCTAssertEqual(upperLeft, SGFP.ValueType.Point(column: "p", row: "n"))
+        XCTAssertEqual(lowerRight, SGFP.ValueType.Point(column: "q", row: "r"))
+    }
 }

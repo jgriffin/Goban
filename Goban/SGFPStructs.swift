@@ -53,40 +53,11 @@ struct SGFP {
         let valueString: String
         var description: String { return "\(String(valueString))" }
     }
-    
-    
-    enum ValueType: Equatable, CustomStringConvertible {
-        case None
-        case Number(value: Int)
-        case Real(value: Float)
-        case Double(value: Character)
-        case Color(colorName: String)
-        case SimpleText(text: String)
-        case Text(text: String)
-        case Point(column: Character, row: Character)
-        case Move(column: Character, row: Character)
-        case Stone(column: Character, row: Character)
-        
-        var description: String {
-            switch self {
-            case .None: return "None"
-            case .Number(let v): return "Number:\(v)"
-            case .Real(let v): return "Real:\(v)"
-            case .Double(let v): return "Double:\(v)"
-            case .Color(let v): return "Color:\(v)"
-            case .SimpleText(let v): return "SimpleText:\(v)"
-            case .Text(let v): return "Text:\(v)"
-            case .Point(let c, let r): return "Point:\(c)\(r)"
-            case .Move(let c, let r): return "Move:\(c)\(r)"
-            case .Stone(let c, let r): return "Stone:\(c)\(r)"
-            }
-        }
-    }
 }
 
 extension SGFP.PropValue {
     
-    typealias ValueParser = SGFPValueParser
+    typealias ValueParser = SGFPValueTypeParser
     
     func parseWith(p: Parser<Character, SGFP.ValueType>) -> SGFP.ValueType? {
         return p.parse(valueString.slice).generate().next()?.0
@@ -136,23 +107,16 @@ extension SGFP.PropValue {
         if let v = parseWith(ValueParser.goStoneParser()), case let .Stone(c, r) = v { return (col:c, row:r) }
         return nil
     }
-}
-
-
-
-func ==(l: SGFP.ValueType, r: SGFP.ValueType) -> Bool {
-    switch l {
-    case .None:                 if case .None = r { return true }
-    case .Number(let vl):       if case .Number(let vr) = r where vl == vr { return true }
-    case .Real(let vl):         if case .Real(let vr) = r where vl == vr { return true }
-    case .Double(let vl):       if case .Double(let vr) = r where vl == vr { return true }
-    case .Color(let vl):        if case .Color(let vr) = r where vl == vr { return true }
-    case .SimpleText(let vl):   if case .SimpleText(let vr) = r where vl == vr { return true }
-    case .Text(let vl):         if case .Text(let vr) = r where vl == vr { return true }
-    case .Point(let cl, let rl):if case .Point(let cr, let rr) = r where cl == cr && rl == rr { return true }
-    case .Move(let cl, let rl): if case .Move(let cr, let rr) = r where cl == cr && rl == rr { return true }
-    case .Stone(let cl, let rl):if case .Stone(let cr, let rr) = r where cl == cr && rl == rr { return true }
+    
+    func toCompresedPoints() -> (upperLeft: SGFP.ValueType, lowerRight: SGFP.ValueType)? {
+        if let v = parseWith(ValueParser.goCompressedPointsParser()),
+            case let .CompressedPoints(ul, lr) = v {
+            return (upperLeft:ul, lowerRight:lr)
+        }
+        return nil
     }
-    return false
+
 }
+
+
 

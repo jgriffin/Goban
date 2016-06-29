@@ -9,7 +9,7 @@
 import Foundation
 
 
-struct SGFPValueParser {
+struct SGFPValueTypeParser {
     
     static func digitParser() -> Parser<Character, Character> {
         return parseCharacterFromSet(NSCharacterSet.decimalDigitCharacterSet())
@@ -32,7 +32,7 @@ struct SGFPValueParser {
     }
     
     static func realParser() -> Parser<Character, SGFP.ValueType> {
-        return curry { SGFPValueParser.realFromWholeDigits($0, fractionDigits: $1) } </> numberStringParser() <*> optional(parseCharacter(".") *> oneOrMore(digitParser()))
+        return curry { SGFPValueTypeParser.realFromWholeDigits($0, fractionDigits: $1) } </> numberStringParser() <*> optional(parseCharacter(".") *> oneOrMore(digitParser()))
     }
     
     static func doubleParser() -> Parser<Character, SGFP.ValueType> {
@@ -60,6 +60,12 @@ struct SGFPValueParser {
         return curry { SGFP.ValueType.Point(column: $0, row: $1) } </> parseLcLetter <*> parseLcLetter
     }
 
+    static func goCompressedPointsParser() -> Parser<Character, SGFP.ValueType> {
+        let parseColon = parseCharacter(":")
+        return curry { SGFP.ValueType.CompressedPoints(upperLeft: $0, lowerRight: $1) } </> goPointParser() <* parseColon <*> goPointParser()
+    }
+
+    
     static func goMoveParser() -> Parser<Character, SGFP.ValueType> {
         let parseLcLetter = parseCharacterFromSet(NSCharacterSet.lowercaseLetterCharacterSet())
         return curry { SGFP.ValueType.Move(column: $0, row: $1) } </> parseLcLetter <*> parseLcLetter
