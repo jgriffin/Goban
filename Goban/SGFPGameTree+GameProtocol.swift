@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension SGFP.GameTree: SGFGameProtocol {
+extension SGFP.GameTree {
     
     // The name of the person commenting the game.
     var annotation: String? {

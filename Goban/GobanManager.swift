@@ -168,7 +168,7 @@ class GobanManager: NSObject, GobanTouchProtocol {
     
     // MARK: SGF
     
-    private var game: SGFGameProtocol?
+    private var game: SGFP.GameTree?
     
     func loadSGFFileAtURL(path: NSURL) {
         unloadSGF()
