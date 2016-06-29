@@ -45,7 +45,7 @@ class SGFFilesTests: XCParserTestBase {
         let results = testParseString(SGFPC.collectionParser(), testString)
         XCTAssertEqual(1, results.count)
         
-        let game: SGFGameProtocol? = results.first?.0.games.first
+        let game: SGFP.GameTree? = results.first?.0.games.first
         XCTAssertNotNil(game)
         
         XCTAssertEqual(game?.fileFormat, 4)

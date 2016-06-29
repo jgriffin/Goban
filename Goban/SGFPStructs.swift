@@ -54,7 +54,7 @@ extension SGFP.PropValue {
     
     typealias ValueParser = SGFPValueTypeParser
     
-    func parseWith(p: Parser<Character, SGFP.ValueType>) -> SGFP.ValueType? {
+    func parseWith(p: CharacterParser<SGFP.ValueType>) -> SGFP.ValueType? {
         return p.parse(asString.slice).generate().next()?.0
     }
     
