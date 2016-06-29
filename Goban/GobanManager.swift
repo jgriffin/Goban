@@ -200,7 +200,7 @@ class GobanManager: NSObject, GobanTouchProtocol {
         gameNodeGenerator = nil
     }
 
-    private var gameNodeGenerator: AnyGenerator<SGFNodeProtocol>!
+    private var gameNodeGenerator: AnyGenerator<SGFP.Node>!
     
     func handleNextNode() {
         if gameNodeGenerator == nil,
@@ -213,18 +213,18 @@ class GobanManager: NSObject, GobanTouchProtocol {
         }
     }
 
-    func handleNode(node: SGFNodeProtocol) {
-        for (k,v) in node.simpleproperties {
-            if let setup = SGFSetupProperties(rawValue: k) {
-                handleSetupProperty(setup, withValue: v)
-            } else if let move = SGFMoveProperties(rawValue: k) {
-                handleMoveProperty(move, withValue: v)
+    func handleNode(node: SGFP.Node) {
+        node.properties.forEach { (property) in
+            if let _ = SGFSetupProperties(rawValue: property.identifier) {
+                handleSetupProperty(property)
+            } else if let _ = SGFMoveProperties(rawValue: property.identifier) {
+                handleMoveProperty(property)
             }
         }
     }
     
-    private func handleSetupProperty(setup: SGFSetupProperties, withValue value: String) {
-        switch setup {
+    private func handleSetupProperty(property: SGFP.Property) {
+        switch SGFSetupProperties(rawValue: property.identifier)! {
         case .AB:
             break
         case .AE:
@@ -236,16 +236,22 @@ class GobanManager: NSObject, GobanTouchProtocol {
         }
     }
     
-    private func handleMoveProperty(move: SGFMoveProperties, withValue value: String) {
-        switch move {
+    private func handleMoveProperty(property: SGFP.Property) {
+        switch SGFMoveProperties(rawValue: property.identifier)! {
         case .B:
-            if let gobanPoint = GobanPoint(SGFString: value) {
+            if property.values.count != 1 {
+                NSLog("unhandled: Move has \(property.values.count) values")
+            }
+            if let (col,row) = property.values.first?.toPoint(), let gobanPoint = GobanPoint(SGFString: "\(col)\(row))") {
                 let stone = Stone(stoneColor: .Black, disabled: false)
                 addStone(stone, atGobanPoint: gobanPoint, isTemporary: false)
             }
             break
         case .W:
-            if let gobanPoint = GobanPoint(SGFString: value) {
+            if property.values.count != 1 {
+                NSLog("unhandled: Move has \(property.values.count) values")
+            }
+            if let (col,row) = property.values.first?.toPoint(), let gobanPoint = GobanPoint(SGFString: "\(col)\(row))") {
                 let stone = Stone(stoneColor: .White, disabled: false)
                 addStone(stone, atGobanPoint: gobanPoint, isTemporary: false)
             }

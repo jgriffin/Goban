@@ -22,21 +22,21 @@ class SGFParserCombinatorTests: XCParserTestBase {
     }
     
     func testParsePropertyValueNumber() {
-        let results = testParseString(SGFPC.propValueStringParser(), "[7]")
+        let results = testParseString(SGFPC.propValueAsStringParser(), "[7]")
         XCTAssertEqual(results.count, 1)
-        XCTAssertEqual(results.first!.0.valueString, "7" )
+        XCTAssertEqual(results.first!.0.asString, "7" )
     }
 
     func testParsePropertyValueMove() {
-        let results = testParseString(SGFPC.propValueStringParser(), "[bd]")
+        let results = testParseString(SGFPC.propValueAsStringParser(), "[bd]")
         XCTAssertEqual(results.count, 1)
-        XCTAssertEqual(results.first!.0.valueString, "bd" )
+        XCTAssertEqual(results.first!.0.asString, "bd" )
     }
 
     func testParsePropertyValueEscapedBracket() {
-        let results = testParseString(SGFPC.propValueStringParser(), "[[bd\\]\\\\]")
+        let results = testParseString(SGFPC.propValueAsStringParser(), "[[bd\\]\\\\]")
         XCTAssertEqual(results.count, 1)
-        XCTAssertEqual(results.first!.0.valueString, "[bd\\]\\\\" )
+        XCTAssertEqual(results.first!.0.asString, "[bd\\]\\\\" )
     }
     
     func testParseProperty() {

@@ -45,8 +45,8 @@ struct SGFP {
     }
     
     struct PropValue: CustomStringConvertible {
-        let valueString: String
-        var description: String { return "\(String(valueString))" }
+        let asString: String
+        var description: String { return "\(String(asString))" }
     }
 }
 
@@ -55,7 +55,7 @@ extension SGFP.PropValue {
     typealias ValueParser = SGFPValueTypeParser
     
     func parseWith(p: Parser<Character, SGFP.ValueType>) -> SGFP.ValueType? {
-        return p.parse(valueString.slice).generate().next()?.0
+        return p.parse(asString.slice).generate().next()?.0
     }
     
     func toNumber() -> Int? {
