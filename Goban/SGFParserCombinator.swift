@@ -33,13 +33,8 @@ struct SGFParserCombinator {
     }
 
     static func propertyParser() -> Parser<Character, SGFP.Property> {
-        return curry { SGFP.Property(identifier: $0, values: $1) } </>
-            propIdentParser() <*> greedy(oneOrMore(eatWS() *> propValueStringParser()))
-    }
-
-    static func propIdentParser() -> Parser<Character, SGFP.PropIdent> {
-        return { SGFP.PropIdent(name: String($0)) } </>
-            parseGreedyCharactersFromSet(NSCharacterSet.uppercaseLetterCharacterSet())
+        return curry { SGFP.Property(identifier: String($0), values: $1) } </>
+            parseGreedyCharactersFromSet(NSCharacterSet.uppercaseLetterCharacterSet()) <*> greedy(oneOrMore(eatWS() *> propValueStringParser()))
     }
     
     static func propValueStringParser() -> Parser<Character, SGFP.PropValue> {

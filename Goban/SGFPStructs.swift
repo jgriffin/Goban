@@ -31,7 +31,7 @@ struct SGFP {
         var description: String { return "Node: \(properties.map{$0.description}.joinWithSeparator(""))" }
         
         func propertyWithName(name: String) -> Property? {
-            if let i = properties.indexOf( { $0.identifier.name == name } ) {
+            if let i = properties.indexOf( { $0.identifier == name } ) {
                 return properties[i]
             }
             return nil
@@ -39,14 +39,9 @@ struct SGFP {
     }
     
     struct Property: CustomStringConvertible {
-        let identifier: SGFP.PropIdent;
+        let identifier: String
         let values: [SGFP.PropValue]
         var description: String { return "\(identifier)\(values.map{"[\($0)]"}.joinWithSeparator(""))" }
-    }
-    
-    struct PropIdent: CustomStringConvertible {
-        let name: String
-        var description: String { return name }
     }
     
     struct PropValue: CustomStringConvertible {

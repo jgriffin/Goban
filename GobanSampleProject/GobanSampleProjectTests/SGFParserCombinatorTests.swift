@@ -21,11 +21,6 @@ class SGFParserCombinatorTests: XCParserTestBase {
         super.tearDown()
     }
     
-    func testParsePropertyIdent() {
-        let results = testParseString(SGFPC.propIdentParser(), "W")
-        XCTAssertResultsContains(results, satisfying: { $0.name == "W" } )
-    }
-
     func testParsePropertyValueNumber() {
         let results = testParseString(SGFPC.propValueStringParser(), "[7]")
         XCTAssertEqual(results.count, 1)
@@ -46,12 +41,12 @@ class SGFParserCombinatorTests: XCParserTestBase {
     
     func testParseProperty() {
         let results = testParseString(SGFPC.propertyParser(), "W[bd]")
-        XCTAssertResultsContains(results, satisfying: { $0.identifier.name == "W" } )
+        XCTAssertResultsContains(results, satisfying: { $0.identifier == "W" } )
     }
 
     func testParseEmptyProperty() {
         let results = testParseString(SGFPC.propertyParser(), "W[]")
-        XCTAssertResultsContains(results, satisfying: { $0.identifier.name == "W" } )
+        XCTAssertResultsContains(results, satisfying: { $0.identifier == "W" } )
     }
 
     func testParseNode() {
@@ -122,7 +117,7 @@ class SGFParserCombinatorTests: XCParserTestBase {
         XCTAssertEqual(node.properties.count, 1)
         
         let property = node.properties.first!
-        XCTAssertEqual(property.identifier.name, "AE")
+        XCTAssertEqual(property.identifier, "AE")
         XCTAssertEqual(property.values.count, 6)
         
         let (upperLeft, lowerRight) = property.values.last!.toCompresedPoints()!

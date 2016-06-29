@@ -11,7 +11,7 @@ import Foundation
 extension SGFP.Node: SGFNodeProtocol {
     var simpleproperties: [(name: String, value: String)] {
         return properties.map {
-            (name: $0.identifier.name, value: $0.values.first!.valueString)
+            (name: $0.identifier, value: $0.values.first!.valueString)
         }
     }
 }
